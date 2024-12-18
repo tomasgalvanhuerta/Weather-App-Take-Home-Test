@@ -7,7 +7,17 @@
 
 import Foundation
 
-public enum CallError: Error {
+public enum CallError: Error, CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .invalidURL: return "Invalid URL"
+        case .notFound: return "Not Found"
+        case .timeout: return "Timeout"
+        case .notAuthorized: return "Not Authorized"
+        case .callIncomplete: return "Incomplete Call"
+        }
+    }
+    
     case invalidURL
     case notFound
     case timeout

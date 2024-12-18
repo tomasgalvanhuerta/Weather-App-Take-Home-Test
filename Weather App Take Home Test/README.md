@@ -1,5 +1,9 @@
 #  README
 
+
+# Set up
+Run the app and enter a valid city
+
 Thank you for giving this opportunity. I timed myself to 5 hours and this is the result. 
 I was able to set up the file to unit test the logic
 Things I did not get to:
@@ -9,4 +13,7 @@ The images are coming out small, dealing with images is always time consuming ge
 Did not have time to test the error handling, hopefully it works, ran out of time
 Also creating a card for the array of cities needs to be done
 Objects are created are testable
+
+I left some notes on the UI, because this seems like an Android type of UI, which was a curveball
+
 - Tomas

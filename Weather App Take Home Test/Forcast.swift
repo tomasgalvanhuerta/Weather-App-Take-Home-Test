@@ -74,7 +74,6 @@ class Forcast: WeatherAPI {
                     break
                 }
             } receiveValue: { value in
-                
                 self.climateSubject.send(value)
             }
     }
