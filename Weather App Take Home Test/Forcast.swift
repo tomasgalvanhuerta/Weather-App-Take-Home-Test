@@ -10,14 +10,31 @@ import Combine
 import SwiftUICore
 
 class Forcast: WeatherAPI {
-    private let climateSubject = PassthroughSubject<Climate, Never>()
+    let crudOperation: CRUDOperation
+    
+    private let climateSubject = CurrentValueSubject<Climate?, Never>(nil)
     private let errorSubject = PassthroughSubject<CallError, Never>()
     
     /// mainQueue is added because there are ways to make our test DispatchQueue to advance time with a test implementation
     /// Very important when testing combine logiv
     /// Point Free Guys have a great library for mocking time advancing
-    init(_ mainQueue: DispatchQueue = .main) {
+    init(
+        _ mainQueue: DispatchQueue = .main,
+        _ crudOperation: CRUDOperation = UserDefaultWeather()
+    ) {
         self.mainQueue = mainQueue
+        self.crudOperation = crudOperation
+        start()
+    }
+    
+    private func start() {
+        switch crudOperation.fetch() {
+        case let .success(climate):
+            climateSubject.send(climate)
+        case let .failure(error):
+            // Not enough time, need to do some mapping from Error to Error
+            errorSubject.send(.notFound)
+        }
     }
     
     // This can be expanded to a background and mainQueue
@@ -57,16 +74,27 @@ class Forcast: WeatherAPI {
                     break
                 }
             } receiveValue: { value in
+                
                 self.climateSubject.send(value)
             }
     }
     
-    var response: AnyPublisher<Climate, Never> {
+    var response: AnyPublisher<Climate?, Never> {
         climateSubject
             .share()
             // Throttle to not over send request
             // Can be adjusted
             .throttle(for: .seconds(1), scheduler: RunLoop.main, latest: true)
+            .map({ climate in
+                if let climate {
+                    let result = self.crudOperation.store(climate)
+                    print(result) // Not enough time!
+                } else {
+                    let result = self.crudOperation.remove()
+                    print(result) // Not enough time!
+                }
+                return climate
+            })
             .receive(on: mainQueue)
             .eraseToAnyPublisher()
     }

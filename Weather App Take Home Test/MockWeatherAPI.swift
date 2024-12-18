@@ -12,10 +12,10 @@ import Combine
 // Move to only unit test
 class MockWeatherAPI: WeatherAPI {
     var searchCity:String?
-    let responseSubject = PassthroughSubject<Climate, Never>()
+    let responseSubject = PassthroughSubject<Climate?, Never>()
     let errorSubject = PassthroughSubject<CallError, Never>()
     
-    var response: AnyPublisher<Climate, Never> {
+    var response: AnyPublisher<Climate?, Never> {
         responseSubject.eraseToAnyPublisher()
     }
     var errorReport: AnyPublisher<CallError, Never> {

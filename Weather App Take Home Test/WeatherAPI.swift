@@ -10,7 +10,7 @@ import Combine
 import SwiftUICore
 
 protocol WeatherAPI {
-    var response: AnyPublisher<Climate, Never> { get }
+    var response: AnyPublisher<Climate?, Never> { get }
     var errorReport: AnyPublisher<CallError, Never> { get }
     func search(_ city: String)
     var apiKey: String { get }
