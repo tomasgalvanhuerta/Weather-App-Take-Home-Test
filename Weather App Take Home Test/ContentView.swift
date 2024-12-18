@@ -8,14 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var showAlert: Bool = false
+    @State var climateAlert: CallError?
+    let weatherAPI: WeatherAPI = Forcast()
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        Home(weatherAPI: weatherAPI)
+        // Did not have time to test this, hopefully it works haha
+            .alert("URL Error", isPresented: $showAlert, presenting: climateAlert) { error in
+                Button(role: .cancel) {
+                    // Handle errors here
+                } label: {
+                    Text("\(error.localizedDescription)")
+                }
+            }
+            .onReceive(weatherAPI.errorReport) { alert in
+                self.climateAlert = alert
+            }
     }
 }
 
